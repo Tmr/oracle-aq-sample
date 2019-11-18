@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
 
-public class ClientConfig extends Config {
+class ClientConfig extends Config {
     /**
      * Name of the file we are looking for to read the configuration.
      */
@@ -20,36 +20,60 @@ public class ClientConfig extends Config {
         super(props);
     }
 
-    public String getFromHostName() {
+    String getFromHostName() {
         return getString("client.from.hostname");
     }
 
-    public String getFromSID() {
+    String getFromSID() {
         return getString("client.from.sid");
     }
 
-    public int getFromPort() {
+    int getFromPort() {
         return getInt("client.from.port");
     }
 
-    public String getFromQueueName() {
+    String getFromQueueName() {
         return getString("client.from.queue_name");
     }
 
-    public String getToHostName() {
+    String getFromQueueOwner() {
+        return getString("client.from.queue_owner");
+    }
+
+    String getFromUser() {
+        return getString("client.from.user");
+    }
+
+    String getFromPassword() {
+        return getString("client.from.password");
+    }
+
+    String getToHostName() {
         return getString("client.to.hostname");
     }
 
-    public String getToSID() {
+    String getToSID() {
         return getString("client.to.sid");
     }
 
-    public int getToPort() {
+    int getToPort() {
         return getInt("client.to.port");
     }
 
-    public String getToQueueName() {
+    String getToQueueName() {
         return getString("client.to.queue_name");
+    }
+
+    String getToQueueOwner() {
+        return getString("client.to.queue_owner");
+    }
+
+    String getToUser() {
+        return getString("client.to.user");
+    }
+
+    String getToPassword() {
+        return getString("client.to.password");
     }
 
     private static ClientConfig config;
@@ -60,21 +84,15 @@ public class ClientConfig extends Config {
             configFile = new File(SECOND_FILE_NAME);
         System.out.println("Reading config from " + configFile.getAbsolutePath());
 
-        FileInputStream fis = null;
         Properties properties = new Properties();
 
-        try {
-            fis = new FileInputStream(configFile);
+        try (FileInputStream fis = new FileInputStream(configFile)) {
             properties.load(fis);
             return properties;
-        } finally {
-            if(fis != null) {
-                fis.close();
-            }
         }
     }
 
-    public static ClientConfig getConfig() throws IOException {
+    static ClientConfig getConfig() throws IOException {
         if (config == null) {
             config = new ClientConfig(getProperties());
 
@@ -83,8 +101,8 @@ public class ClientConfig extends Config {
             if (configResult.thereAreErrors()) {
                 System.out.println("Errors in configuration");
 
-                for (Iterator iter = configResult.getErrors().iterator(); iter.hasNext(); ) {
-                    System.out.println(" > " + iter.next());
+                for (Object o : configResult.getErrors()) {
+                    System.out.println(" > " + o);
                 }
 
                 System.exit(1);
@@ -93,8 +111,8 @@ public class ClientConfig extends Config {
             if (configResult.thereAreUnusedProperties()) {
                 System.out.println("Unused properties");
 
-                for (Iterator iter = configResult.getUnusedProperties().iterator(); iter.hasNext(); ) {
-                    System.out.println(" > " + iter.next());
+                for (Object o : configResult.getUnusedProperties()) {
+                    System.out.println(" > " + o);
                 }
             }
         }
