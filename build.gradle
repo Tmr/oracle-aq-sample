@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'mkb'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+applicationDistribution.from("config") {
+    into "config"
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'
+
+    compile group: 'javaconfig', name: 'javaconfig', version: '1.4'
+
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+
+    compile files('lib/ojdbc7.jar')
+
+    compile files('lib/aqapi.jar')
+
+    compile files('lib/jmscommon.jar')
+
+    compile files('lib/jta.jar')
+}
+
+mainClassName = 'com.mkb.aqtransfer.OracleAQClient'
